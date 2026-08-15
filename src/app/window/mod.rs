@@ -68,6 +68,16 @@ impl Window {
             .set_string("lyric-align-mode", &align_mode)?;
         self.settings()
             .set_string("lyric-display-mode", &display_mode)?;
+        self.settings()
+            .set_int("font-size-above", self.imp().above_font_size.get())?;
+        self.settings()
+            .set_int("font-size-below", self.imp().below_font_size.get())?;
+        self.settings()
+            .set_string("color-above", &self.imp().above_color.borrow())?;
+        self.settings()
+            .set_string("color-below", &self.imp().below_color.borrow())?;
+        self.settings()
+            .set_string("color-glow", &self.imp().glow_color.borrow())?;
 
         Ok(())
     }
@@ -83,11 +93,21 @@ impl Window {
             .string("lyric-display-mode")
             .parse()
             .unwrap();
+        let above_font_size = self.settings().int("font-size-above");
+        let below_font_size = self.settings().int("font-size-below");
+        let above_color = self.settings().string("color-above");
+        let below_color = self.settings().string("color-below");
+        let glow_color = self.settings().string("color-glow");
 
         self.set_default_size(width, height);
         self.set_decorated(decorated);
         self.imp().clickthrough.set(click_through);
         self.imp().lyric_align.set(align_mode);
-        self.imp().lyric_display_mode.set(display_mode)
+        self.imp().lyric_display_mode.set(display_mode);
+        self.imp().above_font_size.set(above_font_size);
+        self.imp().below_font_size.set(below_font_size);
+        *self.imp().above_color.borrow_mut() = above_color.to_string();
+        *self.imp().below_color.borrow_mut() = below_color.to_string();
+        *self.imp().glow_color.borrow_mut() = glow_color.to_string();
     }
 }

@@ -60,6 +60,13 @@ pub fn find_next_lyric<'a>(
         .last()
 }
 
+pub fn find_following_lyric<'a>(
+    elapsed: &Duration,
+    lyric: &'a [LyricLineOwned],
+) -> Option<&'a LyricLineOwned> {
+    lyric.iter().find(|line| line.start_time > *elapsed)
+}
+
 pub fn get_provider(provider_id: &str) -> Option<&'static dyn LyricProvider> {
     use super::lrclib::LRCLib;
     use super::netease::Netease;

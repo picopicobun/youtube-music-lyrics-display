@@ -31,6 +31,10 @@
 
 Waylyrics is a desktop lyrics display application that supports both Linux and Windows.
 
+## About this fork
+
+This repository is a personal fork/derivative of [waylyrics/waylyrics](https://github.com/waylyrics/waylyrics), based on v0.4.0. The original project, license, and credits are retained. This fork adds Windows-focused improvements including native always-on-top and click-through behavior, a live Appearance panel with font and HSB color controls, and a current-lyric plus next-lyric display mode.
+
 Key Features:
 - Built with GTK 4
 - Maintains up-to-date dependencies

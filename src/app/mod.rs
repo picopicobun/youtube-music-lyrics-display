@@ -6,7 +6,7 @@ use gtk::subclass::prelude::ObjectSubclassIsExt;
 use gtk::{Application, Label};
 pub use window::Window;
 
-use crate::app::utils::set_click_pass_through;
+use crate::app::utils::{set_click_pass_through, set_window_topmost};
 use crate::{config, DEFAULT_TEXT};
 
 const WINDOW_MIN_HEIGHT: i32 = 120;
@@ -51,6 +51,7 @@ pub fn build_main_window(
     window.set_title(Some(DEFAULT_TEXT));
     window.set_icon_name(Some(crate::APP_ID_FIXED));
     window.present();
+    set_window_topmost(&window);
 
     let above_label = Label::builder()
         .label("Waylyrics")
@@ -84,6 +85,7 @@ pub fn build_main_window(
     verical_box.insert_child_after(&below_label, Some(&above_label));
 
     window.set_child(Some(&verical_box));
+    utils::apply_font_sizes(&window);
 
     let align = window.imp().lyric_align.get();
     set_lyric_align(&window, align);

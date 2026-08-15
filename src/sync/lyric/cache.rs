@@ -66,9 +66,17 @@ pub async fn fetch_lyric_cached(
                     tlyric: translation,
                     offset,
                 }) => {
-                    let dbus_conn = GTK_DBUS_CONNECTION
-                        .with_borrow(|conn| conn.as_ref().cloned())
-                        .expect("GApplication was not set");
+                    let Some(dbus_conn) =
+                        GTK_DBUS_CONNECTION.with_borrow(|conn| conn.as_ref().cloned())
+                    else {
+                        LYRIC.set(LyricState {
+                            origin,
+                            translation,
+                        });
+                        window.imp().lyric_offset_ms.set(offset);
+                        info!("set offset: {offset}ms");
+                        return Ok(());
+                    };
                     let _ = dbus_conn.emit_signal(
                         None,
                         "/io/github/waylyrics/Waylyrics",
@@ -95,9 +103,9 @@ pub async fn fetch_lyric_cached(
 
     let result = fetch_lyric(track_meta, window).await;
     if result.is_ok() && update_lyric_cache(&cache_path) {
-        let dbus_conn = GTK_DBUS_CONNECTION
-            .with_borrow(|conn| conn.as_ref().cloned())
-            .expect("GApplication was not set");
+        let Some(dbus_conn) = GTK_DBUS_CONNECTION.with_borrow(|conn| conn.as_ref().cloned()) else {
+            return result;
+        };
         let _ = dbus_conn.emit_signal(
             None,
             "/io/github/waylyrics/Waylyrics",

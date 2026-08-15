@@ -40,6 +40,7 @@ fn set_lyric_with_mode(
     origin: Option<&LyricLineOwned>,
 ) {
     match window.imp().lyric_display_mode.get() {
+        LyricDisplayMode::CurrentNext => {}
         LyricDisplayMode::ShowBoth => {
             set_lyric(window, translation.or(origin), "above");
             set_lyric(window, translation.and(origin), "below");
@@ -85,6 +86,28 @@ pub fn refresh_lyric(window: &app::Window, paused: bool) {
             let Some(elapsed) = elapsed else {
                 return;
             };
+
+            if let LyricDisplayMode::CurrentNext = window.imp().lyric_display_mode.get() {
+                let origin_lines = match origin {
+                    LyricOwned::LineTimestamp(lines) => Some(lines.as_slice()),
+                    _ => None,
+                };
+                let translation_lines = match translation {
+                    LyricOwned::LineTimestamp(lines) => Some(lines.as_slice()),
+                    _ => None,
+                };
+                let lines = origin_lines.or(translation_lines);
+                let current = lines.and_then(|lines| {
+                    crate::lyric_providers::utils::find_next_lyric(&elapsed, lines)
+                });
+                let following = lines.and_then(|lines| {
+                    crate::lyric_providers::utils::find_following_lyric(&elapsed, lines)
+                });
+                set_lyric(window, current, "above");
+                set_lyric(window, following, "below");
+                return;
+            }
+
             match (origin, translation) {
                 (
                     LyricOwned::LineTimestamp(origin_lyric),

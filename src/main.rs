@@ -18,8 +18,9 @@ use tracing_subscriber::prelude::*;
 use tracing_subscriber::{fmt, Registry};
 
 use waylyrics::app::actions::{
-    register_reload_theme, register_set_display_mode, register_set_label, register_set_lyric_align,
-    register_switch_decoration, register_switch_passthrough, UIAction, UI_ACTION,
+    register_font_size, register_reload_theme, register_set_display_mode, register_set_label,
+    register_set_lyric_align, register_switch_decoration, register_switch_passthrough, UIAction,
+    UI_ACTION,
 };
 use waylyrics::app::{self, build_main_window};
 
@@ -318,6 +319,7 @@ fn register_actions(
     register_disconnect(app);
     register_set_lyric_align(wind);
     register_set_display_mode(wind);
+    register_font_size(wind);
     register_switch_decoration(wind, &switch_decoration);
     register_switch_passthrough(wind, &switch_passthrough);
     register_set_label(wind);

@@ -22,8 +22,28 @@
       <summary>lyric alignment mode</summary>
     </key>
     <key name="lyric-display-mode" type="s">
-      <default>"show_both"</default>
+      <default>"current_next"</default>
       <summary>lyric display mode</summary>
+    </key>
+    <key name="font-size-above" type="i">
+      <default>28</default>
+      <summary>Font size of the current lyric</summary>
+    </key>
+    <key name="font-size-below" type="i">
+      <default>24</default>
+      <summary>Font size of the secondary lyric</summary>
+    </key>
+    <key name="color-above" type="s">
+      <default>"rgba(255, 255, 255, 0.98)"</default>
+      <summary>Color of the current lyric</summary>
+    </key>
+    <key name="color-below" type="s">
+      <default>"rgba(235, 245, 255, 0.62)"</default>
+      <summary>Color of the secondary lyric</summary>
+    </key>
+    <key name="color-glow" type="s">
+      <default>"rgba(150, 220, 255, 0.85)"</default>
+      <summary>Color of the lyric glow</summary>
     </key>
   </schema>
 </schemalist>

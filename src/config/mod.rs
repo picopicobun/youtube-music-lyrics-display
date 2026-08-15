@@ -33,6 +33,7 @@ pub enum LyricDisplayMode {
     #[default]
     ShowBoth,
     ShowBothRev,
+    CurrentNext,
     Origin,
     PreferTranslation,
 }

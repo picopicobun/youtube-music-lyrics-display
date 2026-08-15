@@ -64,6 +64,96 @@ pub fn register_switch_passthrough(wind: &Window, trigger: &str) {
     bind_shortcut("win.switch-passthrough", wind, trigger);
 }
 
+pub fn register_font_size(wind: &Window) {
+    let dialog = SimpleAction::new("font-size-dialog", None);
+    dialog.connect_activate(clone!(
+        #[weak]
+        wind,
+        move |_, _| show_font_size_dialog(&wind),
+    ));
+    wind.add_action(&dialog);
+
+    let increase = SimpleAction::new("increase-font-size", None);
+    increase.connect_activate(clone!(
+        #[weak]
+        wind,
+        move |_, _| adjust_font_size(&wind, 2),
+    ));
+    wind.add_action(&increase);
+
+    let decrease = SimpleAction::new("decrease-font-size", None);
+    decrease.connect_activate(clone!(
+        #[weak]
+        wind,
+        move |_, _| adjust_font_size(&wind, -2),
+    ));
+    wind.add_action(&decrease);
+
+    let reset = SimpleAction::new("reset-font-size", None);
+    reset.connect_activate(clone!(
+        #[weak]
+        wind,
+        move |_, _| {
+            wind.imp().above_font_size.set(28);
+            wind.imp().below_font_size.set(24);
+            super::utils::apply_font_sizes(&wind);
+        }
+    ));
+    wind.add_action(&reset);
+}
+
+fn show_font_size_dialog(wind: &Window) {
+    let dialog = gtk::Dialog::builder()
+        .title("Font Size")
+        .transient_for(wind)
+        .modal(true)
+        .build();
+
+    let grid = gtk::Grid::builder()
+        .row_spacing(10)
+        .column_spacing(12)
+        .margin_top(16)
+        .margin_bottom(16)
+        .margin_start(16)
+        .margin_end(16)
+        .build();
+
+    let above = gtk::SpinButton::with_range(14.0, 72.0, 1.0);
+    above.set_value(wind.imp().above_font_size.get() as f64);
+    above.set_numeric(true);
+    let below = gtk::SpinButton::with_range(12.0, 64.0, 1.0);
+    below.set_value(wind.imp().below_font_size.get() as f64);
+    below.set_numeric(true);
+
+    grid.attach(&gtk::Label::new(Some("Current lyric")), 0, 0, 1, 1);
+    grid.attach(&above, 1, 0, 1, 1);
+    grid.attach(&gtk::Label::new(Some("Secondary lyric")), 0, 1, 1, 1);
+    grid.attach(&below, 1, 1, 1, 1);
+    dialog.content_area().append(&grid);
+    dialog.add_button("Cancel", gtk::ResponseType::Cancel);
+    dialog.add_button("Apply", gtk::ResponseType::Accept);
+    dialog.set_default_response(gtk::ResponseType::Accept);
+
+    let wind = wind.clone();
+    dialog.connect_response(move |dialog, response| {
+        if response == gtk::ResponseType::Accept {
+            wind.imp().above_font_size.set(above.value_as_int());
+            wind.imp().below_font_size.set(below.value_as_int());
+            super::utils::apply_font_sizes(&wind);
+        }
+        dialog.close();
+    });
+    dialog.present();
+}
+
+fn adjust_font_size(wind: &Window, delta: i32) {
+    let above = (wind.imp().above_font_size.get() + delta).clamp(14, 72);
+    let below = (wind.imp().below_font_size.get() + delta).clamp(12, 64);
+    wind.imp().above_font_size.set(above);
+    wind.imp().below_font_size.set(below);
+    super::utils::apply_font_sizes(wind);
+}
+
 pub fn register_set_display_mode(wind: &Window) {
     let action = SimpleAction::new("set-display-mode", Some(VariantTy::STRING));
     action.connect_activate(clone!(
