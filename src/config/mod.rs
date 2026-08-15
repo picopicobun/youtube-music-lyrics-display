@@ -2,6 +2,7 @@ use documented::DocumentedFields;
 use serde::{Deserialize, Serialize};
 use strum::{EnumIter, EnumString};
 
+use crate::lyric_providers::lrclib::LRCLib;
 use crate::lyric_providers::netease::Netease;
 use crate::lyric_providers::qqmusic::QQMusicConfig;
 use crate::lyric_providers::LyricProvider;
@@ -189,7 +190,7 @@ impl Default for Config {
             enable_filter_regex: false,
             enable_local_lyric: true,
             filter_regexies: default_filter_regexies(),
-            lyric_search_source: vec![Netease.unique_name().into()],
+            lyric_search_source: vec![Netease.unique_name().into(), LRCLib.unique_name().into()],
             skip_auto_search: false,
             show_default_text_on_idle: true,
             show_lyric_on_pause: true,

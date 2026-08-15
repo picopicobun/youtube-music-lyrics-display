@@ -65,7 +65,7 @@ pub async fn fetch_lyric_cached(
                     olyric: origin,
                     tlyric: translation,
                     offset,
-                }) => {
+                }) if has_displayable_lyric(&origin) || has_displayable_lyric(&translation) => {
                     let Some(dbus_conn) =
                         GTK_DBUS_CONNECTION.with_borrow(|conn| conn.as_ref().cloned())
                     else {
@@ -96,6 +96,7 @@ pub async fn fetch_lyric_cached(
                     info!("set offset: {offset}ms");
                     return Ok(());
                 }
+                Ok(_) => warn!("ignoring empty lyric cache: {cache_path:?}"),
                 Err(e) => error!("cache parse error: {e} from {cache_path:?}"),
             }
         }
@@ -134,8 +135,10 @@ pub fn update_lyric_cache(cache_path: &Path) -> bool {
              origin,
              translation,
          }| {
-            // do not cache empty lyric
-            if origin.is_none() && translation.is_none() {
+            // Do not persist successful-looking cache files with zero displayable
+            // lines. Otherwise every later launch treats the empty result as a
+            // cache hit and never tries the providers again.
+            if !has_displayable_lyric(origin) && !has_displayable_lyric(translation) {
                 return false;
             }
 
@@ -163,6 +166,44 @@ struct LyricCache {
     olyric: LyricOwned,
     tlyric: LyricOwned,
     offset: i64,
+}
+
+fn has_displayable_lyric(lyric: &LyricOwned) -> bool {
+    matches!(
+        lyric,
+        LyricOwned::LineTimestamp(lines)
+            if lines.iter().any(|line| !line.text.trim().is_empty())
+    )
+}
+
+#[cfg(test)]
+mod tests {
+    use std::time::Duration;
+
+    use super::has_displayable_lyric;
+    use crate::lyric_providers::{LyricLineOwned, LyricOwned};
+
+    #[test]
+    fn rejects_empty_or_blank_timed_lyrics() {
+        assert!(!has_displayable_lyric(&LyricOwned::None));
+        assert!(!has_displayable_lyric(&LyricOwned::LineTimestamp(vec![])));
+        assert!(!has_displayable_lyric(&LyricOwned::LineTimestamp(vec![
+            LyricLineOwned {
+                text: "   ".to_owned(),
+                start_time: Duration::ZERO,
+            },
+        ])));
+    }
+
+    #[test]
+    fn accepts_a_non_empty_timed_line() {
+        assert!(has_displayable_lyric(&LyricOwned::LineTimestamp(vec![
+            LyricLineOwned {
+                text: "lyric".to_owned(),
+                start_time: Duration::ZERO,
+            },
+        ])));
+    }
 }
 
 fn md5_cache_dir(digest: md5::Digest) -> PathBuf {
