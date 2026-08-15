@@ -6,9 +6,9 @@
 
 点击下面这个按钮下载 Windows 便携版：
 
-## [⬇️ 直接下载 Waylyrics Windows 便携版](https://github.com/picopicobun/youtube-music-lyrics-display/releases/latest/download/Waylyrics-Windows-Portable.zip)
+## [⬇️ 直接下载 Waylyrics Windows 便携版](https://github.com/picopicobun/youtube-music-lyrics-display/releases/latest/download/DOWNLOAD-ME-Waylyrics-Windows-Portable.zip)
 
-如果上面的直接下载按钮暂时打不开，请进入[最新版本页面](https://github.com/picopicobun/youtube-music-lyrics-display/releases/latest)，找到页面底部的 **Assets**，然后下载文件名以 `Waylyrics-Windows-Portable` 开头、以 `.zip` 结尾的文件。
+如果上面的直接下载按钮暂时打不开，请进入[最新版本页面](https://github.com/picopicobun/youtube-music-lyrics-display/releases/latest)，找到页面底部的 **Assets**，只下载 `DOWNLOAD-ME-Waylyrics-Windows-Portable.zip`。其他 `Source code` 文件是给开发者使用的源码，不需要下载。
 
 > [!WARNING]
 > 不要下载 GitHub 自动生成的 `Source code (zip)` 或 `Source code (tar.gz)`。那两个是给开发者编译用的源码，普通用户无法直接运行。
@@ -16,7 +16,7 @@
 ## 第二步：完整解压 ZIP
 
 1. 打开 Windows 的“下载”文件夹。
-2. 找到刚下载的 `Waylyrics-Windows-Portable.zip`。
+2. 找到刚下载的 `DOWNLOAD-ME-Waylyrics-Windows-Portable.zip`。
 3. 右键这个 ZIP，选择 **全部解压**。
 4. 选择一个容易找到的位置，例如桌面，然后点击 **提取**。
 5. 等待解压完成，再打开解压后出现的文件夹。
