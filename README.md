@@ -3,7 +3,7 @@
 > [!IMPORTANT]
 > 本仓库是由 **picopicobun** 维护的 Windows 定制版本，基于开源项目 [waylyrics/waylyrics](https://github.com/waylyrics/waylyrics) **v0.4.0** 开发。原项目版权、MIT 许可证与贡献者信息均予以保留。
 >
-> **Windows 用户：[前往 Releases 下载最新便携版](https://github.com/picopicobun/youtube-music-lyrics-display/releases/latest)**。下载 ZIP、完整解压后，双击 `launch-waylyrics.vbs` 即可启动，无需安装 Rust、GTK 或 Visual Studio。
+> **Windows 用户：[前往 Releases 下载最新便携版](https://github.com/picopicobun/youtube-music-lyrics-display/releases/latest)**。下载 ZIP、完整解压后，双击根目录的 `waylyrics.exe` 即可启动，无需安装 Rust、GTK 或 Visual Studio。
 >
 > 第一次使用、不知道该下载哪个文件？请看：[**Windows 小白安装教程（一步一步版）**](docs/windows-install-zh.md)。
 

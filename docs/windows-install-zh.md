@@ -26,13 +26,13 @@
 
 ## 第三步：启动 Waylyrics
 
-在解压后的文件夹里找到：
+在解压后的文件夹根目录里找到：
 
-`launch-waylyrics.vbs`
+`waylyrics.exe`
 
-双击它即可启动。正常情况下不会出现黑色代码窗口，桌面上会出现歌词窗口，任务栏右下角的系统托盘里也会出现 Waylyrics 图标。
+双击它即可启动。这个 EXE 是一个很小的启动器，会自动找到 `bin` 文件夹中的 GTK 运行库，再打开真正的 Waylyrics。正常情况下不会出现黑色代码窗口，桌面上会出现歌词窗口，任务栏右下角的系统托盘里也会出现 Waylyrics 图标。
 
-请不要只把 `launch-waylyrics.vbs` 或 `waylyrics.exe` 单独移动出去；整个文件夹需要保持在一起。
+也可以双击 `launch-waylyrics.vbs`，效果相同。请不要把任何一个启动文件单独移动出去；整个文件夹需要保持在一起。
 
 ## 第四步：处理 Windows 安全提示
 
@@ -70,7 +70,7 @@
 
 ## 可选：创建桌面快捷方式
 
-1. 右键 `launch-waylyrics.vbs`。
+1. 右键根目录的 `waylyrics.exe`。
 2. Windows 11 用户先点击 **显示更多选项**。
 3. 选择 **发送到 → 桌面快捷方式**。
 
@@ -86,13 +86,17 @@
 2. 等待 5 秒，或切换到另一首歌再切回来。
 3. 打开 Waylyrics 菜单，点击 `Refetch lyric`。
 4. 打开 `Select Player`，手动选择当前播放器。
-5. 完全退出 Waylyrics 后，再次双击 `launch-waylyrics.vbs`。
+5. 完全退出 Waylyrics 后，再次双击根目录的 `waylyrics.exe`。
 
 从 `v0.4.0-pico.2` 开始，空歌词缓存会被自动忽略并重新搜索，不会再一直卡在空白状态。
 
 ### 双击后什么都没发生
 
-查看任务栏右下角的系统托盘，Waylyrics 可能已经在后台运行。也可以打开任务管理器，结束已有的 `waylyrics.exe`，再重新双击启动脚本。
+查看任务栏右下角的系统托盘，Waylyrics 可能已经在后台运行。也可以打开任务管理器，结束已有的 `waylyrics-app.exe`，再重新双击根目录的 `waylyrics.exe`。
+
+### 提示缺少 `libgio-2.0-0.dll` 或其他 DLL
+
+请确认你下载的是 `v0.4.0-pico.3` 或更新版本，并且已经完整解压。从这个版本开始，根目录的 `waylyrics.exe` 是专用启动器，会自动加载 `bin` 文件夹里的 DLL。旧版本若直接双击主程序，可能出现这个错误。
 
 ### 歌词窗口挡住鼠标点击
 

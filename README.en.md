@@ -3,7 +3,7 @@
 > [!IMPORTANT]
 > This repository is a Windows-focused custom edition maintained by **picopicobun**, derived from the open-source project [waylyrics/waylyrics](https://github.com/waylyrics/waylyrics) **v0.4.0**. The original copyright, MIT license, and contributor credits are retained.
 >
-> **Windows users: [download the latest portable build from Releases](https://github.com/picopicobun/youtube-music-lyrics-display/releases/latest)**. Extract the ZIP completely and double-click `launch-waylyrics.vbs`; Rust, GTK, and Visual Studio are not required.
+> **Windows users: [download the latest portable build from Releases](https://github.com/picopicobun/youtube-music-lyrics-display/releases/latest)**. Extract the ZIP completely and double-click the root `waylyrics.exe`; Rust, GTK, and Visual Studio are not required.
 >
 > New to portable Windows apps? See the [step-by-step Windows installation guide (Chinese)](docs/windows-install-zh.md).
 
