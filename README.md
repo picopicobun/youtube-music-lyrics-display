@@ -1,4 +1,9 @@
-# Waylyrics
+# Waylyrics Windows 定制版
+
+> [!IMPORTANT]
+> 本仓库是由 **picopicobun** 维护的 Windows 定制版本，基于开源项目 [waylyrics/waylyrics](https://github.com/waylyrics/waylyrics) **v0.4.0** 开发。原项目版权、MIT 许可证与贡献者信息均予以保留。
+>
+> **Windows 用户：[前往 Releases 下载最新便携版](https://github.com/picopicobun/youtube-music-lyrics-display/releases/latest)**。下载 ZIP、完整解压后，双击 `launch-waylyrics.vbs` 即可启动，无需安装 Rust、GTK 或 Visual Studio。
 
 <div align="center">
   <img src="img/waylyrics.png" style="height: 200px; width: auto;"></img>
@@ -34,9 +39,9 @@
 
 Waylyrics 是一款支持 Linux/Windows 的桌面歌词软件。
 
-## About this fork
+## 关于本定制版
 
-This repository is a personal fork/derivative of [waylyrics/waylyrics](https://github.com/waylyrics/waylyrics), based on v0.4.0. The original project, license, and credits are retained. This fork adds Windows-focused improvements including native always-on-top and click-through behavior, a live Appearance panel with font and HSB color controls, and a current-lyric plus next-lyric display mode.
+本仓库是 [waylyrics/waylyrics](https://github.com/waylyrics/waylyrics) 的个人 fork/衍生版本，基于 v0.4.0。除了保留原项目功能外，本版本增加了 Windows 原生窗口置顶和鼠标穿透、可实时调整字号及 HSB 颜色的 Appearance 面板，以及“当前歌词 + 下一句歌词”双行显示等功能。
 
 关键特性：
 - 基于 GTK 4

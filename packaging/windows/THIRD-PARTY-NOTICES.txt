@@ -1,0 +1,17 @@
+Third-party notices
+===================
+
+Waylyrics is distributed under the MIT License. A copy is included in this
+portable package as LICENSE.
+
+This portable package also contains runtime libraries from GTK, GLib,
+GStreamer, and the MSYS2 MinGW environment. Those components remain under
+their respective upstream licenses; inclusion in this package does not alter
+their copyright or license terms.
+
+Project and license information:
+- Waylyrics: https://github.com/waylyrics/waylyrics
+- GTK: https://www.gtk.org/
+- GLib: https://gitlab.gnome.org/GNOME/glib
+- GStreamer: https://gstreamer.freedesktop.org/
+- MSYS2 packages: https://packages.msys2.org/
