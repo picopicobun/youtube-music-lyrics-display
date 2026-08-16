@@ -2,10 +2,14 @@
 
 use std::env;
 use std::ffi::OsStr;
+use std::fs::OpenOptions;
+use std::io::Write;
 use std::os::windows::ffi::OsStrExt;
 use std::path::Path;
-use std::process::Command;
+use std::process::{Command, Stdio};
 use std::ptr;
+use std::thread;
+use std::time::Duration;
 
 #[link(name = "user32")]
 extern "system" {
@@ -71,7 +75,9 @@ fn main() {
         path.push(existing);
     }
 
-    let result = Command::new(&app)
+    let log_path = portable_path(root, "waylyrics-startup.log");
+    let mut command = Command::new(&app);
+    command
         .current_dir(root)
         .env("WAYLYRICS_THEME_PRESETS_DIR", portable_path(root, "themes"))
         .env("XDG_DATA_DIRS", portable_path(root, "share"))
@@ -83,12 +89,50 @@ fn main() {
             "GDK_PIXBUF_MODULE_FILE",
             portable_path(root, "lib\\gdk-pixbuf-2.0\\2.10.0\\loaders.cache"),
         )
-        .env("PATH", path)
-        .spawn();
+        .env("PATH", path);
 
-    if let Err(error) = result {
-        show_error(&format!(
-            "Waylyrics could not start.\n\n{error}\n\nPlease extract the entire ZIP before running the app."
-        ));
+    if let Ok(mut log) = OpenOptions::new()
+        .create(true)
+        .truncate(true)
+        .write(true)
+        .open(&log_path)
+    {
+        let _ = writeln!(log, "Waylyrics portable startup log");
+        let _ = writeln!(log, "Application: {}", app.display());
+        let _ = writeln!(log);
+        if let Ok(error_log) = log.try_clone() {
+            command
+                .stdout(Stdio::from(log))
+                .stderr(Stdio::from(error_log));
+        }
+    }
+
+    let mut child = match command.spawn() {
+        Ok(child) => child,
+        Err(error) => {
+            show_error(&format!(
+                "Waylyrics could not start.\n\n{error}\n\nPlease extract the entire ZIP before running the app."
+            ));
+            return;
+        }
+    };
+
+    thread::sleep(Duration::from_secs(5));
+    match child.try_wait() {
+        Ok(Some(status)) => {
+            let code = status
+                .code()
+                .map(|value| value.to_string())
+                .unwrap_or_else(|| "terminated by Windows or security software".to_owned());
+            show_error(&format!(
+                "Waylyrics exited during startup.\n\nExit status: {code}\n\nDiagnostic log:\n{}\n\nIf Waylyrics is not already running, please send this log file when reporting the problem.",
+                log_path.display()
+            ));
+        }
+        Ok(None) => {}
+        Err(error) => show_error(&format!(
+            "Waylyrics started, but its status could not be checked.\n\n{error}\n\nDiagnostic log:\n{}",
+            log_path.display()
+        )),
     }
 }

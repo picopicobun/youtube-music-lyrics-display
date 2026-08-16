@@ -18,6 +18,9 @@ Notes
 - Keep waylyrics.exe together with the bin, lib, share, and themes folders.
 - The real application is bin\waylyrics-app.exe. Start it through the root
   waylyrics.exe so Windows can locate all bundled DLLs.
+- The launcher writes waylyrics-startup.log in this folder. If the app exits
+  during its first five seconds, the launcher displays the exit status and
+  asks you to share that log when reporting the problem.
 - Personal settings and lyric caches are created in the current Windows
   user's AppData folders. No maintainer settings or caches are included here.
 - cool-glow.css is included as an optional theme preset.
