@@ -73,6 +73,30 @@ fn theme_presets_dir() -> Option<PathBuf> {
     THEME_PRESETS_DIR.map(PathBuf::from)
 }
 
+#[cfg(target_os = "windows")]
+fn migrate_portable_theme(config: &mut Config, user_theme_dir: &std::path::Path) -> Result<()> {
+    if config.theme != "default" {
+        return Ok(());
+    }
+
+    let user_theme = user_theme_dir.join("cool-glow.css");
+    if user_theme.exists() {
+        return Ok(());
+    }
+
+    let Some(bundled_theme) = theme_presets_dir().map(|dir| dir.join("cool-glow.css")) else {
+        return Ok(());
+    };
+    if !bundled_theme.is_file() {
+        return Ok(());
+    }
+
+    fs::copy(bundled_theme, user_theme)?;
+    config.theme = "cool-glow".into();
+    log::info!("migrated portable Windows theme to cool-glow");
+    Ok(())
+}
+
 fn main() -> Result<glib::ExitCode> {
     #[cfg(feature = "i18n")]
     let i18n_result = {
@@ -209,7 +233,9 @@ fn build_ui(app: &Application) -> Result<()> {
 
     log::info!("config path: {:?}", config_path);
     let config = std::fs::read_to_string(&config_path)?;
-    let config: Config = toml_edit::de::from_str(&config)?;
+    let mut config: Config = toml_edit::de::from_str(&config)?;
+    #[cfg(target_os = "windows")]
+    migrate_portable_theme(&mut config, &theme_dir)?;
     let config_with_docs = append_comments(&toml::to_string(&config)?)?;
     fs::write(config_path, config_with_docs)?;
 
@@ -377,4 +403,42 @@ mod _alloc {
 
     #[global_allocator]
     static GLOBAL: MiMalloc = MiMalloc;
+}
+
+#[cfg(all(test, target_os = "windows"))]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn migrates_an_existing_default_portable_theme() {
+        let root = std::env::temp_dir().join(format!(
+            "waylyrics-portable-theme-migration-{}",
+            std::process::id()
+        ));
+        let bundled_dir = root.join("bundled");
+        let user_dir = root.join("user");
+        fs::create_dir_all(&bundled_dir).unwrap();
+        fs::create_dir_all(&user_dir).unwrap();
+        fs::write(bundled_dir.join("cool-glow.css"), "test theme").unwrap();
+
+        let previous_theme_dir = std::env::var_os("WAYLYRICS_THEME_PRESETS_DIR");
+        std::env::set_var("WAYLYRICS_THEME_PRESETS_DIR", &bundled_dir);
+
+        let mut config = Config::default();
+        config.theme = "default".into();
+        migrate_portable_theme(&mut config, &user_dir).unwrap();
+
+        assert_eq!(config.theme, "cool-glow");
+        assert_eq!(
+            fs::read_to_string(user_dir.join("cool-glow.css")).unwrap(),
+            "test theme"
+        );
+
+        if let Some(previous_theme_dir) = previous_theme_dir {
+            std::env::set_var("WAYLYRICS_THEME_PRESETS_DIR", previous_theme_dir);
+        } else {
+            std::env::remove_var("WAYLYRICS_THEME_PRESETS_DIR");
+        }
+        fs::remove_dir_all(root).unwrap();
+    }
 }
