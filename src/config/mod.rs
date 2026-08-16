@@ -185,7 +185,12 @@ impl Default for Config {
             player_sync_interval: "2s".to_owned(),
             lyric_update_interval: "20ms".to_owned(),
             length_toleration: "2s".to_owned(),
-            theme: "default".into(),
+            theme: if cfg!(target_os = "windows") {
+                "cool-glow"
+            } else {
+                "default"
+            }
+            .into(),
             cache_lyrics: true,
             enable_filter_regex: false,
             enable_local_lyric: true,
