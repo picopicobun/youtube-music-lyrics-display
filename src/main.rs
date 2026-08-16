@@ -46,6 +46,31 @@ use waylyrics::tray_icon::start_tray_service;
 
 pub const THEME_PRESETS_DIR: Option<&str> = option_env!("WAYLYRICS_THEME_PRESETS_DIR");
 
+fn theme_presets_dir() -> Option<PathBuf> {
+    if let Some(path) = std::env::var_os("WAYLYRICS_THEME_PRESETS_DIR") {
+        return Some(PathBuf::from(path));
+    }
+
+    #[cfg(target_os = "windows")]
+    if let Ok(executable) = std::env::current_exe() {
+        if let Some(portable_root) = executable.parent().map(PathBuf::from) {
+            let portable_themes = portable_root.join("themes");
+            if portable_themes.is_dir() {
+                return Some(portable_themes);
+            }
+
+            if let Some(portable_root) = portable_root.parent() {
+                let portable_themes = portable_root.join("themes");
+                if portable_themes.is_dir() {
+                    return Some(portable_themes);
+                }
+            }
+        }
+    }
+
+    THEME_PRESETS_DIR.map(PathBuf::from)
+}
+
 fn main() -> Result<glib::ExitCode> {
     #[cfg(feature = "i18n")]
     let i18n_result = {
@@ -229,7 +254,7 @@ fn build_ui(app: &Application) -> Result<()> {
 
     let theme_file_name = format!("{theme}.css");
     let user_theme = theme_dir.join(&theme_file_name);
-    let global_theme = THEME_PRESETS_DIR.map(|d| PathBuf::from(d).join(&theme_file_name));
+    let global_theme = theme_presets_dir().map(|d| d.join(&theme_file_name));
 
     let theme_path = if user_theme.exists() {
         user_theme
